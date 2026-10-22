@@ -1,8 +1,8 @@
 export class ApiError extends Error {
   readonly status: number
-  readonly details?: string
+  readonly details: string[]
 
-  constructor(status: number, message: string, details?: string) {
+  constructor(status: number, message: string, details: string[] = []) {
     super(message)
     this.name = 'ApiError'
     this.status = status
@@ -16,7 +16,7 @@ export function isAbortError(error: unknown): boolean {
 
 export function errorMessage(error: unknown): string {
   if (error instanceof ApiError) {
-    return error.details ? `${error.message}: ${error.details}` : error.message
+    return error.message
   }
   if (error instanceof Error) {
     return error.message

@@ -3,9 +3,10 @@
 Small React frontend that demonstrates the EasyOffer backend: offers, technology
 analytics, salary statistics and source data completeness.
 
-> Status: **M1 — application foundation**. Routes, layout, API client and shared
-> request states exist. The offer and analytics views are placeholders until M2/M3.
-> This repository is not yet evidence for F-030; that requires G5 (deployed demo).
+> Status: **M2 — offer vertical slice**. Offer list, conjunctive filters, paging and
+> details are implemented against the verified contract. Analytics views remain
+> placeholders until M3. This repository is not yet evidence for F-030; that
+> requires G5 (deployed demo).
 
 ## Stack
 
@@ -67,32 +68,37 @@ variable: everything prefixed with `VITE_` ends up in the browser bundle.
 
 ```
 src/
-  api/          config, typed models, error type, single fetch client, endpoints
+  api/          config, contract types, error type, single fetch client, endpoints
   app/          route table
-  components/   shared UI (request states, page header, placeholder)
+  components/   shared UI (request states, page header, offer card, pagination)
   hooks/        useApiQuery (abort on unmount, ignore stale responses)
   layouts/      app shell
+  lib/          URL query parsing and display formatting
   pages/        one component per route
 ```
 
 Rules kept by this layer:
 
-- page numbers are zero-based and read from `PageResponseTO`, never `PageImpl`;
-- analytics dates are inclusive `YYYY-MM-DD`; offer timestamps stay ISO date-time;
-- non-2xx responses become `ApiError` with `message` and optional `details`;
+- page numbers are zero-based and read from `PageResponseTO` (`first`/`last` too);
+- analytics use `dateFrom`/`dateTo` inclusive `YYYY-MM-DD`, never timestamps;
+- offer timestamp filters stay ISO date-time;
+- search filters are repeated query parameters and are kept in the URL;
+- changing a filter or page size resets `page` to 0;
+- non-2xx responses become `ApiError` with `message` and a list of `details`;
 - no admin endpoint and no server secret is referenced anywhere in `src/`.
 
 ## Contract status
 
-`src/api/types.ts` is **provisional**. Capture the real contract before FE-008:
+Types in `src/api/types.ts` are aligned with the verified backend sources; see
+[`docs/contract-notes.md`](docs/contract-notes.md) for the exact fields and the
+verified commit. Capture the generated document when the backend is running:
 
 ```powershell
 curl http://localhost:8080/v3/api-docs -o docs/openapi-v1.json
 ```
 
-Then reconcile field names in `src/api/types.ts` only. If the backend changes
-after the M0 snapshot, OpenAPI changes first; the frontend must not silently
-redefine backend semantics.
+If the backend changes after the M0 snapshot, OpenAPI changes first; the
+frontend must not silently redefine backend semantics.
 
 The human-readable `docs/frontend-api.md` handoff is git-ignored in the backend
 repository (DEC-012) and must be copied into this repository manually.
@@ -101,7 +107,7 @@ repository (DEC-012) and must be copied into this repository manually.
 
 - [x] M0 — repository, scope, owners, API strategy
 - [x] M1 — shell, routing, API client, loading/empty/error states
-- [ ] M2 — offer list, filters, details
+- [x] M2 — offer list, filters, details
 - [ ] M3 — technology, salary and completeness views
 - [ ] M4 — tests, responsive/accessibility review
 - [ ] M5 — same-origin deployment, smoke test, demo rehearsal

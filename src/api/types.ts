@@ -1,16 +1,13 @@
 /**
- * PROVISIONAL contract models (M1).
+ * Contract models aligned with EasyOffer backend sources (master @ 2026-10-22)
+ * and the frontend handoff:
+ * - GET /offers, /offers/search -> PageResponseTO (zero-based, first/last);
+ * - GET /v1.0/categories -> CategoryTO[] with a single categoryName field;
+ * - analytics calendar ranges use inclusive YYYY-MM-DD dateFrom/dateTo;
+ * - offer timestamp filters stay ISO date-time;
+ * - errors: ErrorResponse.details is a list of strings.
  *
- * These types describe what the UI needs, not a verified copy of the backend
- * schema. Before FE-008 / FE-011 start they must be reconciled with the
- * captured OpenAPI document (GET /v3/api-docs) and the docs/frontend-api.md
- * handoff. If a name differs, change it here only - no ad-hoc parsing in views.
- *
- * Known contract rules (see F-039):
- * - offer list/search use the stable PageResponseTO wrapper, not PageImpl;
- * - page numbers are zero-based;
- * - analytics date ranges are inclusive YYYY-MM-DD values;
- * - offer timestamp filters stay ISO date-time values.
+ * Re-run the contract snapshot (GET /v3/api-docs) after every backend change.
  */
 
 export interface PageResponseTO<T> {
@@ -19,126 +16,213 @@ export interface PageResponseTO<T> {
   size: number
   totalElements: number
   totalPages: number
+  first: boolean
+  last: boolean
 }
 
 export interface PageParams {
   page: number
   size: number
+  /** Spring sort syntax, e.g. "publishedAt,desc". Repeatable in the API. */
+  sort?: string
 }
 
-export interface Category {
-  id: string
-  name: string
-}
+export type SalaryType = 'GROSS' | 'NET' | 'UNKNOWN'
 
-export interface OfferSummary {
-  id: string
+/** Mirrors pl.easyoffer.offer_service.model.to.OfferResponseTO. */
+export interface OfferResponseTO {
+  id: number
+  externalId?: string | null
   title: string
   companyName?: string | null
-  city?: string | null
-  salaryFrom?: number | null
-  salaryTo?: number | null
+  location?: string | null
+  description?: string | null
+  experienceLevel?: string | null
+  employmentType?: string | null
+  workMode?: string | null
+  salaryMin?: number | null
+  salaryMax?: number | null
+  salaryUnit?: string | null
   currency?: string | null
+  salaryType?: SalaryType | null
+  source?: string | null
+  url?: string | null
+  language?: string | null
+  createdAt?: string | null
+  updatedAt?: string | null
+  technologies?: string[] | null
   publishedAt?: string | null
 }
 
-export interface OfferDetails extends OfferSummary {
-  description?: string | null
-  source?: string | null
-  category?: string | null
-  technologies?: string[] | null
-  updatedAt?: string | null
+/** Mirrors CategoryTO: the category name is the identifier exposed to clients. */
+export interface CategoryTO {
+  categoryName: string
 }
 
+/** Mirrors OfferSearchRequest. Every list parameter may be repeated in the URL. */
 export interface OfferSearchParams {
-  phrase?: string
-  category?: string
-  city?: string
-  source?: string
+  ids?: number[]
+  externalIds?: string[]
+  titles?: string[]
+  companyNames?: string[]
+  locations?: string[]
+  experienceLevels?: string[]
+  employmentTypes?: string[]
+  categoryNames?: string[]
+  workModes?: string[]
   salaryFrom?: number
   salaryTo?: number
-  /** ISO date-time, not a plain date. */
-  publishedFrom?: string
-  /** ISO date-time, not a plain date. */
-  publishedTo?: string
+  salaryUnits?: string[]
+  currencies?: string[]
+  sources?: string[]
+  urls?: string[]
+  languages?: string[]
+  /** ISO date-time */
+  createdAtFrom?: string
+  /** ISO date-time */
+  createdAtTo?: string
+  /** ISO date-time */
+  updatedAtFrom?: string
+  /** ISO date-time */
+  updatedAtTo?: string
+  technologies?: string[]
+  /** ISO date-time */
+  publishedAtFrom?: string
+  /** ISO date-time */
+  publishedAtTo?: string
 }
 
-/** Inclusive YYYY-MM-DD range used by every analytics endpoint. */
-export interface AnalyticsRange {
-  from: string
-  to: string
-  source?: string
-  category?: string
-}
-
-export interface TechnologyPopularityItem {
-  technology: string
+export interface TechnologyPopularityItemTO {
+  technologyName: string
   count: number
-  denominator?: number
-  share?: number
+  denominator: number
+  sharePercentage: number
 }
 
-export type TechnologyPopularityResponse = PageResponseTO<TechnologyPopularityItem>
+export interface TechnologyPopularityTO {
+  technologyNormalizationVersion?: string | null
+  deduplicationVersion?: string | null
+  periodField?: string | null
+  categoryName?: string | null
+  sources?: string[] | null
+  dateFrom?: string | null
+  dateTo?: string | null
+  rawOfferCount: number
+  uniqueOfferCount: number
+  eligibleOfferCount: number
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+  technologies: TechnologyPopularityItemTO[]
+}
 
-export interface TechnologyTrendPoint {
-  /** YYYY-MM; months without offers must be kept as zero. */
+export interface TechnologyTrendPointTO {
+  /** YYYY-MM; months without data are returned as zero by the backend. */
   month: string
   count: number
-  share?: number
+  denominator: number
+  sharePercentage: number
 }
 
-export interface TechnologyTrendResponse {
-  technology: string
-  points: TechnologyTrendPoint[]
+export interface TechnologyTrendTO {
+  technologyNormalizationVersion?: string | null
+  deduplicationVersion?: string | null
+  periodField?: string | null
+  monthAssignment?: string | null
+  technologyName: string
+  categoryName?: string | null
+  sources?: string[] | null
+  dateFrom?: string | null
+  dateTo?: string | null
+  rawOfferCount: number
+  uniqueOfferCount: number
+  eligibleOfferCount: number
+  points: TechnologyTrendPointTO[]
 }
 
-export interface SalaryBucket {
-  label: string
-  count: number
-}
-
-export interface SalaryDistributionResponse {
+export interface SalaryStatisticTO {
+  groupValue: string
   currency: string
   salaryUnit: string
-  employmentType?: string | null
-  grossNet?: string | null
-  sampleSize: number
-  exploratory: boolean
-  buckets: SalaryBucket[]
+  employmentType: string
+  salaryType: SalaryType
+  minimumSalary: number
+  percentile25Salary: number
+  averageSalary: number
+  medianSalary: number
+  percentile75Salary: number
+  maximumSalary: number
+  offersCount: number
+  meetsRecommendedSampleSize: boolean
 }
 
-export interface SalaryTrendPoint {
+export interface SalaryAnalyticsTO {
+  salaryNormalizationVersion?: string | null
+  quantileMethod?: string | null
+  recommendedMinimumSampleSize: number
+  byCategory: SalaryStatisticTO[]
+  byExperienceLevel: SalaryStatisticTO[]
+}
+
+export interface SalaryTrendPointTO {
   /** YYYY-MM */
   month: string
-  sampleSize: number
-  median?: number | null
-  p25?: number | null
-  p75?: number | null
+  averageSalary?: number | null
+  medianSalary?: number | null
+  offersCount: number
 }
 
-export interface SalaryTrendResponse {
+export interface SalaryTrendTO {
+  categoryName: string
   currency: string
+  employmentType: string
+  experienceLevel?: string | null
   salaryUnit: string
-  employmentType?: string | null
-  grossNet?: string | null
-  exploratory: boolean
-  points: SalaryTrendPoint[]
+  salaryType: SalaryType
+  points: SalaryTrendPointTO[]
 }
 
-export interface DataCompletenessField {
-  field: string
-  eligible: number
-  usable: number
-  usableShare: number
+export type DataCompletenessField =
+  | 'SALARY'
+  | 'TECHNOLOGIES'
+  | 'EXPERIENCE_LEVEL'
+  | 'LOCATION'
+  | 'WORK_MODE'
+  | 'PUBLISHED_AT'
+
+export interface DataCompletenessFieldTO {
+  field: DataCompletenessField
+  usableOfferCount: number
+  unusableOfferCount: number
+  eligibleOfferCount: number
+  completenessPercentage: number
 }
 
-export interface DataCompletenessSource {
+export interface DataCompletenessSourceTO {
   source: string
-  periodFrom?: string | null
-  periodTo?: string | null
-  fields: DataCompletenessField[]
+  eligibleOfferCount: number
+  fields: DataCompletenessFieldTO[]
 }
 
-export interface DataCompletenessResponse {
-  sources: DataCompletenessSource[]
+export interface DataCompletenessTO {
+  completenessVersion?: string | null
+  salaryNormalizationVersion?: string | null
+  periodField?: string | null
+  unitOfAnalysis?: string | null
+  sources?: string[] | null
+  dateFrom?: string | null
+  dateTo?: string | null
+  eligibleOfferCount: number
+  bySource: DataCompletenessSourceTO[]
+}
+
+export interface CategoryAnalyticsTO {
+  categoryName: string
+  offersCount: number
+}
+
+export interface AnalyticsTO {
+  categoriesStatistic: CategoryAnalyticsTO[]
+  newestJobOffers: OfferResponseTO[]
 }

@@ -72,7 +72,7 @@ export function UiStatesPage() {
       <section className="card">
         <h2>Error</h2>
         <ErrorState
-          error={new ApiError(500, 'Internal server error', 'trace id: demo-only')}
+          error={new ApiError(500, 'Internal server error', ['trace id: demo-only'])}
         />
       </section>
 

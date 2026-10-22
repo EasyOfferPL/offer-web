@@ -39,18 +39,26 @@ function buildUrl(path: string, query?: QueryParams): string {
   return queryString ? `${url}?${queryString}` : url
 }
 
+function parseDetails(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item))
+  }
+  if (typeof value === 'string' && value) {
+    return [value]
+  }
+  return []
+}
+
 async function toHttpError(response: Response): Promise<ApiError> {
   let message = `Request failed with status ${response.status}`
-  let details: string | undefined
+  let details: string[] = []
 
   try {
     const body = (await response.json()) as ErrorBody
     if (typeof body.message === 'string' && body.message) {
       message = body.message
     }
-    if (typeof body.details === 'string' && body.details) {
-      details = body.details
-    }
+    details = parseDetails(body.details)
   } catch {
     // The backend returned a non-JSON error body; keep the status message.
   }

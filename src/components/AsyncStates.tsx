@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { errorMessage } from '../api/errors'
+import { ApiError, errorMessage } from '../api/errors'
 
 interface LoadingStateProps {
   label?: string
@@ -40,10 +40,19 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({ error, onRetry }: ErrorStateProps) {
+  const details = error instanceof ApiError ? error.details : []
+
   return (
     <div className="state state--error" role="alert">
       <p className="state__title">Something went wrong</p>
       <p>{errorMessage(error)}</p>
+      {details.length > 0 ? (
+        <ul className="error-details">
+          {details.map((detail) => (
+            <li key={detail}>{detail}</li>
+          ))}
+        </ul>
+      ) : null}
       {onRetry ? (
         <button type="button" className="btn" onClick={onRetry}>
           Try again
