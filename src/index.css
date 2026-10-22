@@ -569,8 +569,8 @@ select:focus-visible,
   gap: 14px;
 }
 
-.filters__grid--keywords {
-  grid-template-columns: 1.35fr 1fr 1fr 1fr;
+.filters__grid--main {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .filters__hint {
@@ -689,7 +689,15 @@ select:focus-visible,
 }
 
 .filters__more-body {
-  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 18px;
+}
+
+.filters__group--nested {
+  padding-top: 0;
+  border-top: none;
 }
 
 .field {
@@ -1001,14 +1009,14 @@ code {
 
 @media (max-width: 980px) {
   .filters__grid,
-  .filters__grid--keywords {
+  .filters__grid--main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 560px) {
   .filters__grid,
-  .filters__grid--keywords {
+  .filters__grid--main {
     grid-template-columns: 1fr;
   }
 

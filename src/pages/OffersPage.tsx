@@ -13,7 +13,8 @@ function toDateTimeLocal(value: string | null): string {
 }
 
 const ADVANCED_KEYS = [
-  'experienceLevels',
+  'categoryNames',
+  'companyNames',
   'employmentTypes',
   'workModes',
   'currencies',
@@ -29,6 +30,10 @@ export function OffersPage() {
   const state = parseOffersQuery(searchParams)
   const categoriesSelected = searchParams.getAll('categoryNames')
   const hasAdvancedFilters = ADVANCED_KEYS.some((key) => searchParams.has(key))
+  const advancedActiveCount = ADVANCED_KEYS.reduce(
+    (count, key) => count + searchParams.getAll(key).filter(Boolean).length,
+    0,
+  )
 
   const categories = useApiQuery((signal) => categoriesApi.list(signal), [])
 
@@ -145,8 +150,8 @@ export function OffersPage() {
         </div>
 
         <div className="filters__group">
-          <span className="filters__legend">Keywords</span>
-          <div className="filters__grid filters__grid--keywords">
+          <span className="filters__legend">Main filters</span>
+          <div className="filters__grid filters__grid--main">
             <label className="field">
               <span>Title contains</span>
               <input
@@ -158,22 +163,22 @@ export function OffersPage() {
             </label>
 
             <label className="field">
-              <span>Company</span>
-              <input
-                name="companyNames"
-                type="search"
-                placeholder="e.g. Acme"
-                defaultValue={searchParams.get('companyNames') ?? ''}
-              />
-            </label>
-
-            <label className="field">
               <span>Technology</span>
               <input
                 name="technologies"
                 type="text"
                 placeholder="e.g. Java"
                 defaultValue={searchParams.get('technologies') ?? ''}
+              />
+            </label>
+
+            <label className="field">
+              <span>Experience level</span>
+              <input
+                name="experienceLevels"
+                type="text"
+                placeholder="e.g. SENIOR"
+                defaultValue={searchParams.get('experienceLevels') ?? ''}
               />
             </label>
 
@@ -189,51 +194,53 @@ export function OffersPage() {
           </div>
         </div>
 
-        <div className="filters__group">
-          <span className="filters__legend">Category</span>
-          {categories.status === 'loading' ? (
-            <p className="field__hint field__hint--muted">Loading categories…</p>
-          ) : null}
-          {categories.status === 'error' ? (
-            <p className="field__hint">Categories are unavailable right now.</p>
-          ) : null}
-          {categories.status === 'success' && categories.data?.length === 0 ? (
-            <p className="field__hint field__hint--muted">No categories in the dataset yet.</p>
-          ) : null}
-          {categories.data && categories.data.length > 0 ? (
-            <div className="check-chips">
-              {categories.data.map((category) => (
-                <label key={category.categoryName} className="check-chip">
-                  <input
-                    type="checkbox"
-                    name="categoryNames"
-                    value={category.categoryName}
-                    defaultChecked={categoriesSelected.includes(category.categoryName)}
-                  />
-                  <span>{category.categoryName}</span>
-                </label>
-              ))}
-            </div>
-          ) : null}
-        </div>
-
         <details className="filters__more" open={hasAdvancedFilters}>
           <summary>
-            <span>Salary, seniority and dates</span>
+            <span>More filters</span>
             <span className="filters__more-hint">
-              {hasAdvancedFilters ? 'Active' : 'Optional'}
+              {advancedActiveCount > 0 ? `${advancedActiveCount} active` : 'Optional'}
             </span>
           </summary>
 
           <div className="filters__more-body">
+            <div className="filters__group filters__group--nested">
+              <span className="filters__legend">Category</span>
+              {categories.status === 'loading' ? (
+                <p className="field__hint field__hint--muted">Loading categories…</p>
+              ) : null}
+              {categories.status === 'error' ? (
+                <p className="field__hint">Categories are unavailable right now.</p>
+              ) : null}
+              {categories.status === 'success' && categories.data?.length === 0 ? (
+                <p className="field__hint field__hint--muted">
+                  No categories in the dataset yet.
+                </p>
+              ) : null}
+              {categories.data && categories.data.length > 0 ? (
+                <div className="check-chips">
+                  {categories.data.map((category) => (
+                    <label key={category.categoryName} className="check-chip">
+                      <input
+                        type="checkbox"
+                        name="categoryNames"
+                        value={category.categoryName}
+                        defaultChecked={categoriesSelected.includes(category.categoryName)}
+                      />
+                      <span>{category.categoryName}</span>
+                    </label>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+
             <div className="filters__grid">
               <label className="field">
-                <span>Experience level</span>
+                <span>Company</span>
                 <input
-                  name="experienceLevels"
-                  type="text"
-                  placeholder="e.g. SENIOR"
-                  defaultValue={searchParams.get('experienceLevels') ?? ''}
+                  name="companyNames"
+                  type="search"
+                  placeholder="e.g. Acme"
+                  defaultValue={searchParams.get('companyNames') ?? ''}
                 />
               </label>
 
