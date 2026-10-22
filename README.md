@@ -44,6 +44,22 @@ The browser never calls the backend directly: it always uses `VITE_API_BASE_URL`
 which defaults to `/api`. In production the same path must be served by a reverse
 proxy to the backend, because the backend has no explicit CORS configuration.
 
+### Demo API (synthetic, development only)
+
+If `offer-service` is not running, the proxy returns **502** and the UI has no
+categories or offers. To keep working on the interface, start the bundled mock
+in a second terminal:
+
+```powershell
+npm run mock:api
+```
+
+It listens on `http://localhost:8080` and serves 57 synthetic offers, categories
+and empty analytics envelopes. Data is generated in memory and is reset on every
+restart. **Do not use it for screenshots, demos or thesis evidence** — those must
+use the real backend and persisted data. Stop it (`Ctrl+C`) before starting the
+real service, otherwise port 8080 stays busy.
+
 ### Environment variables
 
 | Variable | Exposed to browser | Purpose |
@@ -60,6 +76,7 @@ variable: everything prefixed with `VITE_` ends up in the browser bundle.
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Dev server with `/api` proxy |
+| `npm run mock:api` | Synthetic demo API on :8080 (dev only, never for evidence) |
 | `npm run build` | Type-check and production build |
 | `npm run preview` | Serve the production build locally |
 | `npm run lint` | ESLint |
