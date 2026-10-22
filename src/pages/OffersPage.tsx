@@ -12,10 +12,23 @@ function toDateTimeLocal(value: string | null): string {
   return value ? value.slice(0, 16) : ''
 }
 
+const ADVANCED_KEYS = [
+  'experienceLevels',
+  'employmentTypes',
+  'workModes',
+  'currencies',
+  'salaryFrom',
+  'salaryTo',
+  'publishedAtFrom',
+  'publishedAtTo',
+] as const
+
 export function OffersPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const queryKey = searchParams.toString()
   const state = parseOffersQuery(searchParams)
+  const categoriesSelected = searchParams.getAll('categoryNames')
+  const hasAdvancedFilters = ADVANCED_KEYS.some((key) => searchParams.has(key))
 
   const categories = useApiQuery((signal) => categoriesApi.list(signal), [])
 
@@ -116,160 +129,196 @@ export function OffersPage() {
       </section>
 
       <form key={queryKey} className="card filters" onSubmit={handleSubmit}>
-        <div className="filters__grid">
-          <label className="field">
-            <span>Title contains</span>
-            <input
-              name="titles"
-              type="search"
-              placeholder="e.g. Java"
-              defaultValue={searchParams.get('titles') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Company</span>
-            <input
-              name="companyNames"
-              type="search"
-              placeholder="e.g. Acme"
-              defaultValue={searchParams.get('companyNames') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Category</span>
-            <select
-              name="categoryNames"
-              multiple
-              size={4}
-              defaultValue={searchParams.getAll('categoryNames')}
-              disabled={categories.status === 'loading'}
-            >
-              {categories.data?.map((category) => (
-                <option key={category.categoryName} value={category.categoryName}>
-                  {category.categoryName}
-                </option>
-              ))}
-            </select>
-            {categories.status === 'error' ? (
-              <span className="field__hint">Categories are unavailable right now.</span>
-            ) : null}
-          </label>
-
-          <label className="field">
-            <span>Experience level</span>
-            <input
-              name="experienceLevels"
-              type="text"
-              placeholder="e.g. SENIOR"
-              defaultValue={searchParams.get('experienceLevels') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Employment type</span>
-            <input
-              name="employmentTypes"
-              type="text"
-              placeholder="e.g. B2B"
-              defaultValue={searchParams.get('employmentTypes') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Work mode</span>
-            <input
-              name="workModes"
-              type="text"
-              placeholder="e.g. REMOTE"
-              defaultValue={searchParams.get('workModes') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Source</span>
-            <input
-              name="sources"
-              type="text"
-              placeholder="e.g. JUST_JOIN_IT"
-              defaultValue={searchParams.get('sources') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Technology</span>
-            <input
-              name="technologies"
-              type="text"
-              placeholder="e.g. Java"
-              defaultValue={searchParams.get('technologies') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Currency</span>
-            <input
-              name="currencies"
-              type="text"
-              placeholder="e.g. PLN"
-              defaultValue={searchParams.get('currencies') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Salary from</span>
-            <input
-              name="salaryFrom"
-              type="number"
-              min={0}
-              step={1}
-              inputMode="numeric"
-              defaultValue={searchParams.get('salaryFrom') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Salary to</span>
-            <input
-              name="salaryTo"
-              type="number"
-              min={0}
-              step={1}
-              inputMode="numeric"
-              defaultValue={searchParams.get('salaryTo') ?? ''}
-            />
-          </label>
-
-          <label className="field">
-            <span>Published from</span>
-            <input
-              name="publishedAtFrom"
-              type="datetime-local"
-              defaultValue={toDateTimeLocal(searchParams.get('publishedAtFrom'))}
-            />
-          </label>
-
-          <label className="field">
-            <span>Published to</span>
-            <input
-              name="publishedAtTo"
-              type="datetime-local"
-              defaultValue={toDateTimeLocal(searchParams.get('publishedAtTo'))}
-            />
-          </label>
+        <div className="filters__header">
+          <div>
+            <h2>Filters</h2>
+            <p className="muted">Results must match every active value.</p>
+          </div>
+          <div className="filters__header-meta">
+            <span className="badge badge--muted">
+              {state.hasFilters ? `${state.filtersCount} active` : 'No filters'}
+            </span>
+            <button className="btn btn--ghost btn--sm" type="button" onClick={handleReset}>
+              Reset
+            </button>
+          </div>
         </div>
+
+        <div className="filters__group">
+          <span className="filters__legend">Keywords</span>
+          <div className="filters__grid filters__grid--keywords">
+            <label className="field">
+              <span>Title contains</span>
+              <input
+                name="titles"
+                type="search"
+                placeholder="e.g. Java"
+                defaultValue={searchParams.get('titles') ?? ''}
+              />
+            </label>
+
+            <label className="field">
+              <span>Company</span>
+              <input
+                name="companyNames"
+                type="search"
+                placeholder="e.g. Acme"
+                defaultValue={searchParams.get('companyNames') ?? ''}
+              />
+            </label>
+
+            <label className="field">
+              <span>Technology</span>
+              <input
+                name="technologies"
+                type="text"
+                placeholder="e.g. Java"
+                defaultValue={searchParams.get('technologies') ?? ''}
+              />
+            </label>
+
+            <label className="field">
+              <span>Source</span>
+              <input
+                name="sources"
+                type="text"
+                placeholder="e.g. JUST_JOIN_IT"
+                defaultValue={searchParams.get('sources') ?? ''}
+              />
+            </label>
+          </div>
+        </div>
+
+        <div className="filters__group">
+          <span className="filters__legend">Category</span>
+          {categories.status === 'loading' ? (
+            <p className="field__hint field__hint--muted">Loading categories…</p>
+          ) : null}
+          {categories.status === 'error' ? (
+            <p className="field__hint">Categories are unavailable right now.</p>
+          ) : null}
+          {categories.status === 'success' && categories.data?.length === 0 ? (
+            <p className="field__hint field__hint--muted">No categories in the dataset yet.</p>
+          ) : null}
+          {categories.data && categories.data.length > 0 ? (
+            <div className="check-chips">
+              {categories.data.map((category) => (
+                <label key={category.categoryName} className="check-chip">
+                  <input
+                    type="checkbox"
+                    name="categoryNames"
+                    value={category.categoryName}
+                    defaultChecked={categoriesSelected.includes(category.categoryName)}
+                  />
+                  <span>{category.categoryName}</span>
+                </label>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        <details className="filters__more" open={hasAdvancedFilters}>
+          <summary>
+            <span>Salary, seniority and dates</span>
+            <span className="filters__more-hint">
+              {hasAdvancedFilters ? 'Active' : 'Optional'}
+            </span>
+          </summary>
+
+          <div className="filters__more-body">
+            <div className="filters__grid">
+              <label className="field">
+                <span>Experience level</span>
+                <input
+                  name="experienceLevels"
+                  type="text"
+                  placeholder="e.g. SENIOR"
+                  defaultValue={searchParams.get('experienceLevels') ?? ''}
+                />
+              </label>
+
+              <label className="field">
+                <span>Employment type</span>
+                <input
+                  name="employmentTypes"
+                  type="text"
+                  placeholder="e.g. B2B"
+                  defaultValue={searchParams.get('employmentTypes') ?? ''}
+                />
+              </label>
+
+              <label className="field">
+                <span>Work mode</span>
+                <input
+                  name="workModes"
+                  type="text"
+                  placeholder="e.g. REMOTE"
+                  defaultValue={searchParams.get('workModes') ?? ''}
+                />
+              </label>
+
+              <label className="field">
+                <span>Currency</span>
+                <input
+                  name="currencies"
+                  type="text"
+                  placeholder="e.g. PLN"
+                  defaultValue={searchParams.get('currencies') ?? ''}
+                />
+              </label>
+
+              <label className="field">
+                <span>Salary from</span>
+                <input
+                  name="salaryFrom"
+                  type="number"
+                  min={0}
+                  step={1}
+                  inputMode="numeric"
+                  defaultValue={searchParams.get('salaryFrom') ?? ''}
+                />
+              </label>
+
+              <label className="field">
+                <span>Salary to</span>
+                <input
+                  name="salaryTo"
+                  type="number"
+                  min={0}
+                  step={1}
+                  inputMode="numeric"
+                  defaultValue={searchParams.get('salaryTo') ?? ''}
+                />
+              </label>
+
+              <label className="field">
+                <span>Published from</span>
+                <input
+                  name="publishedAtFrom"
+                  type="datetime-local"
+                  defaultValue={toDateTimeLocal(searchParams.get('publishedAtFrom'))}
+                />
+              </label>
+
+              <label className="field">
+                <span>Published to</span>
+                <input
+                  name="publishedAtTo"
+                  type="datetime-local"
+                  defaultValue={toDateTimeLocal(searchParams.get('publishedAtTo'))}
+                />
+              </label>
+            </div>
+          </div>
+        </details>
 
         <div className="filters__actions">
           <button className="btn" type="submit">
             Apply filters
           </button>
-          <button className="btn btn--ghost" type="button" onClick={handleReset}>
-            Reset
-          </button>
-          {state.hasFilters ? (
-            <span className="muted">{state.filtersCount} filter value(s) active</span>
-          ) : null}
+          <span className="muted filters__hint">
+            Filters are stored in the URL, so the current view can be shared.
+          </span>
         </div>
       </form>
 
@@ -295,9 +344,12 @@ export function OffersPage() {
         ) : (
           <>
             <div className="toolbar">
-              <p className="muted">
-                {offers.data.totalElements} offer(s) · page {offers.data.page + 1} of{' '}
-                {Math.max(offers.data.totalPages, 1)}
+              <p className="toolbar__summary">
+                <strong>{offers.data.totalElements}</strong>{' '}
+                <span className="muted">
+                  offer(s) · page {offers.data.page + 1} of{' '}
+                  {Math.max(offers.data.totalPages, 1)}
+                </span>
               </p>
 
               <div className="toolbar__controls">
@@ -316,7 +368,7 @@ export function OffersPage() {
                 </label>
 
                 <label className="field field--inline">
-                  <span>Sort</span>
+                  <span>Sort by</span>
                   <select
                     value={state.sort}
                     onChange={(event) => changeSort(event.target.value)}
