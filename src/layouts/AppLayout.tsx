@@ -16,7 +16,12 @@ export function AppLayout() {
       <header className="site-header">
         <div className="container site-header__inner">
           <Link to="/" className="brand">
-            EasyOffer <span>Analytics</span>
+            <span className="brand__mark" aria-hidden="true">
+              EO
+            </span>
+            <span className="brand__text">
+              EasyOffer <span>Analytics</span>
+            </span>
           </Link>
 
           <nav aria-label="Main navigation">
@@ -44,7 +49,7 @@ export function AppLayout() {
 
       <footer className="site-footer">
         <div className="container site-footer__inner">
-          <span>EasyOffer frontend · M1 foundation</span>
+          <span>EasyOffer frontend · M2 offer vertical slice</span>
           <span className="muted">
             API base: <code>{API_BASE_URL}</code>
           </span>

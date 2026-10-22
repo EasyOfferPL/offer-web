@@ -87,7 +87,33 @@ export function OffersPage() {
       <PageHeader
         title="Offers"
         description="Browse and filter persisted offers. Filters are combined with AND and kept in the URL."
+        badge="Dataset"
       />
+
+      <section className="stat-rail" aria-label="Dataset summary">
+        <div className="stat">
+          <span className="stat__label">Offers</span>
+          <span className="stat__value stat__value--accent">
+            {offers.data ? offers.data.totalElements : '—'}
+          </span>
+        </div>
+        <div className="stat">
+          <span className="stat__label">Pages</span>
+          <span className="stat__value">
+            {offers.data ? Math.max(offers.data.totalPages, 1) : '—'}
+          </span>
+        </div>
+        <div className="stat">
+          <span className="stat__label">Current page</span>
+          <span className="stat__value">
+            {offers.data ? offers.data.page + 1 : '—'}
+          </span>
+        </div>
+        <div className="stat">
+          <span className="stat__label">Categories</span>
+          <span className="stat__value">{categories.data ? categories.data.length : '—'}</span>
+        </div>
+      </section>
 
       <form key={queryKey} className="card filters" onSubmit={handleSubmit}>
         <div className="filters__grid">
