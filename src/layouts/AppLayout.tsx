@@ -49,7 +49,7 @@ export function AppLayout() {
 
       <footer className="site-footer">
         <div className="container site-footer__inner">
-          <span>EasyOffer frontend · M2 offer vertical slice</span>
+          <span>EasyOffer frontend · M3 analytics</span>
           <span className="muted">
             API base: <code>{API_BASE_URL}</code>
           </span>

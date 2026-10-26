@@ -3,10 +3,11 @@
 Small React frontend that demonstrates the EasyOffer backend: offers, technology
 analytics, salary statistics and source data completeness.
 
-> Status: **M2 — offer vertical slice**. Offer list, conjunctive filters, paging and
-> details are implemented against the verified contract. Analytics views remain
-> placeholders until M3. This repository is not yet evidence for F-030; that
-> requires G5 (deployed demo).
+> Status: **M3 — analytics views**. Offers, technology popularity and trend,
+> salary distribution and trend, and source data completeness are implemented
+> against the verified contract. Tests and the responsive/accessibility review
+> are M4. This repository is not yet evidence for F-030; that requires G5
+> (deployed demo).
 
 ## Stack
 
@@ -15,8 +16,9 @@ analytics, salary statistics and source data completeness.
 - React Router 7
 - ESLint
 
-No chart library is chosen yet (open decision FE-011); M3 starts with accessible
-tables and only adds charts if the decision is made.
+M3 uses accessible tables plus lightweight CSS/SVG bars for the two trend
+views; no chart library is required. Charts are always paired with an exact
+table, and zero/null points are rendered explicitly instead of being dropped.
 
 ## Requirements
 
@@ -54,11 +56,14 @@ in a second terminal:
 npm run mock:api
 ```
 
-It listens on `http://localhost:8080` and serves 57 synthetic offers, categories
-and empty analytics envelopes. Data is generated in memory and is reset on every
-restart. **Do not use it for screenshots, demos or thesis evidence** — those must
-use the real backend and persisted data. Stop it (`Ctrl+C`) before starting the
-real service, otherwise port 8080 stays busy.
+It listens on `http://localhost:8080` and serves 57 synthetic offers, categories,
+computed technology popularity/trend, salary distribution/trend and source
+completeness envelopes. The data deliberately includes missing fields and small
+salary groups so the UI exercises null, zero-month and exploratory states. Data
+is generated in memory and is reset on every restart. **Do not use it for
+screenshots, demos or thesis evidence** — those must use the real backend and
+persisted data. Stop it (`Ctrl+C`) before starting the real service, otherwise
+port 8080 stays busy.
 
 ### Environment variables
 
@@ -87,10 +92,11 @@ variable: everything prefixed with `VITE_` ends up in the browser bundle.
 src/
   api/          config, contract types, error type, single fetch client, endpoints
   app/          route table
-  components/   shared UI (request states, page header, offer card, pagination)
+  components/   shared UI (request states, page header, offer card, pagination,
+                analytics controls, charts and salary cards)
   hooks/        useApiQuery (abort on unmount, ignore stale responses)
   layouts/      app shell
-  lib/          URL query parsing and display formatting
+  lib/          URL query parsing, analytics range helpers and display formatting
   pages/        one component per route
 ```
 
@@ -98,6 +104,10 @@ Rules kept by this layer:
 
 - page numbers are zero-based and read from `PageResponseTO` (`first`/`last` too);
 - analytics use `dateFrom`/`dateTo` inclusive `YYYY-MM-DD`, never timestamps;
+- invalid or inverted analytics ranges are blocked before any request;
+- every analytics view states its scope, denominator and unit;
+- salary groups keep currency, salary unit, employment type and gross/net;
+  groups are never combined into one scale;
 - offer timestamp filters stay ISO date-time;
 - search filters are repeated query parameters and are kept in the URL;
 - changing a filter or page size resets `page` to 0;
@@ -125,7 +135,7 @@ repository (DEC-012) and must be copied into this repository manually.
 - [x] M0 — repository, scope, owners, API strategy
 - [x] M1 — shell, routing, API client, loading/empty/error states
 - [x] M2 — offer list, filters, details
-- [ ] M3 — technology, salary and completeness views
+- [x] M3 — technology, salary and completeness views
 - [ ] M4 — tests, responsive/accessibility review
 - [ ] M5 — same-origin deployment, smoke test, demo rehearsal
 
