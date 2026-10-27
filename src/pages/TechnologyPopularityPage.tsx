@@ -268,7 +268,7 @@ function PopularityContent({
           </div>
 
           <div className="card table-card">
-            <div className="table-scroll">
+            <div className="table-scroll" role="region" aria-label="Technology popularity data table" tabIndex={0}>
               <table className="data-table">
                 <caption className="sr-only">
                   Technology counts, denominator and share for the selected scope

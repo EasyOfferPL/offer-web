@@ -526,7 +526,7 @@ function SalaryTrendContent({ data }: { data: SalaryTrendTO }) {
           </section>
 
           <div className="card table-card">
-            <div className="table-scroll">
+            <div className="table-scroll" role="region" aria-label="Monthly salary trend data table" tabIndex={0}>
               <table className="data-table">
                 <caption className="sr-only">
                   Monthly average and median salary for the selected scope

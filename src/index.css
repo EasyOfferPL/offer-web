@@ -740,7 +740,6 @@ select:focus-visible,
 .field select:focus {
   border-color: var(--accent-border);
   box-shadow: 0 0 0 3px rgba(245, 181, 68, 0.12);
-  outline: none;
 }
 
 .field select[multiple] {
@@ -1285,6 +1284,12 @@ code {
   overflow-x: auto;
 }
 
+.table-scroll:focus-visible {
+  border-radius: var(--radius-md);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
 .data-table {
   width: 100%;
   min-width: 640px;
@@ -1487,6 +1492,7 @@ code {
 
 .salary-card__head {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
@@ -1644,6 +1650,7 @@ code {
 
 .completeness-card__head {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
@@ -1786,6 +1793,7 @@ code {
 
 .snapshot-card__head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -1798,6 +1806,9 @@ code {
 }
 
 .text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: var(--accent);
   font-size: 12px;
   font-weight: 600;
@@ -1807,6 +1818,12 @@ code {
 .text-link:hover {
   color: var(--accent-strong);
   text-decoration: underline;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
 }
 
 .rank-list {
@@ -1827,6 +1844,10 @@ code {
 }
 
 .rank-row__label {
+  display: inline-flex;
+  align-items: center;
+  min-width: 24px;
+  min-height: 24px;
   color: var(--text-soft);
   font-weight: 600;
   text-decoration: none;
@@ -1886,6 +1907,9 @@ code {
 }
 
 .recent-row__main a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: var(--text);
   font-size: 14px;
   font-weight: 600;
@@ -1938,6 +1962,10 @@ code {
 
   .scope-form__grid {
     grid-template-columns: 1fr;
+  }
+
+  .scope-form__actions .btn {
+    flex: 1 1 120px;
   }
 
   .chart__plot {

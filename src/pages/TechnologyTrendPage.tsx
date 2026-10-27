@@ -214,7 +214,7 @@ function TrendContent({ data }: { data: TechnologyTrendTO }) {
           </section>
 
           <div className="card table-card">
-            <div className="table-scroll">
+            <div className="table-scroll" role="region" aria-label="Monthly technology trend data table" tabIndex={0}>
               <table className="data-table">
                 <caption className="sr-only">
                   Monthly count, denominator and share for {data.technologyName}

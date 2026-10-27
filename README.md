@@ -3,11 +3,11 @@
 Small React frontend that demonstrates the EasyOffer backend: offers, technology
 analytics, salary statistics and source data completeness.
 
-> Status: **M3 — analytics views**. Offers, technology popularity and trend,
-> salary distribution and trend, and source data completeness are implemented
-> against the verified contract. Tests and the responsive/accessibility review
-> are M4. This repository is not yet evidence for F-030; that requires G5
-> (deployed demo).
+> Status: **M4 - tested and reviewed analytics frontend**. Offers, technology
+> popularity and trend, salary distribution and trend, and source data
+> completeness are implemented against the verified contract. Unit/component
+> tests plus the responsive and accessibility review are complete. This
+> repository is not yet evidence for F-030; that requires G5 (deployed demo).
 
 ## Stack
 
@@ -85,6 +85,7 @@ variable: everything prefixed with `VITE_` ends up in the browser bundle.
 | `npm run build` | Type-check and production build |
 | `npm run preview` | Serve the production build locally |
 | `npm run lint` | ESLint |
+| `npm test` | Vitest helper and server-rendered component tests |
 
 ## Structure
 
@@ -136,7 +137,7 @@ repository (DEC-012) and must be copied into this repository manually.
 - [x] M1 — shell, routing, API client, loading/empty/error states
 - [x] M2 — offer list, filters, details
 - [x] M3 — technology, salary and completeness views
-- [ ] M4 — tests, responsive/accessibility review
+- [x] M4 - tests, responsive/accessibility review
 - [ ] M5 — same-origin deployment, smoke test, demo rehearsal
 
 Dev-only page for reviewing request states: http://localhost:5173/dev/ui-states

@@ -77,7 +77,7 @@ function OfferDetails({ offer }: { offer: OfferResponseTO }) {
       </section>
 
       <p>
-        <Link to="/offers">← Back to offers</Link>
+        <Link className="back-link" to="/offers">← Back to offers</Link>
       </p>
     </div>
   )
@@ -93,7 +93,7 @@ function OfferMissing({ offerId }: { offerId: string }) {
           No offer with id <code>{offerId || '—'}</code> exists in the dataset. It may
           have been removed, or the link may be incorrect.
         </p>
-        <Link to="/offers">Back to the offer list</Link>
+        <Link className="back-link" to="/offers">Back to the offer list</Link>
       </div>
     </div>
   )
