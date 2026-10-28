@@ -15,29 +15,29 @@ export function OfferCard({ offer }: OfferCardProps) {
 
   return (
     <article className="card offer-card">
-      <div className="offer-card__head">
-        <h2>
-          <Link to={`/offers/${offer.id}`}>{offer.title}</Link>
-        </h2>
-        {offer.source ? <span className="badge badge--muted">{offer.source}</span> : null}
-      </div>
+      <Link className="offer-card__link" to={`/offers/${offer.id}`} aria-label={`Open ${offer.title}`}>
+        <div className="offer-card__head">
+          <h2 className="offer-card__title">{offer.title}</h2>
+          {offer.source ? <span className="badge badge--muted">{offer.source}</span> : null}
+        </div>
 
-      <p className="muted">{place || 'Company and location not specified'}</p>
-      <p className="offer-card__salary">{formatSalary(offer)}</p>
+        <p className="muted">{place || 'Company and location not specified'}</p>
+        <p className="offer-card__salary">{formatSalary(offer)}</p>
 
-      {offer.technologies && offer.technologies.length > 0 ? (
-        <ul className="chips" aria-label="Technologies">
-          {offer.technologies.slice(0, 10).map((technology) => (
-            <li key={technology}>{technology}</li>
-          ))}
-        </ul>
-      ) : null}
+        {offer.technologies && offer.technologies.length > 0 ? (
+          <ul className="chips" aria-label="Technologies">
+            {offer.technologies.slice(0, 10).map((technology) => (
+              <li key={technology}>{technology}</li>
+            ))}
+          </ul>
+        ) : null}
 
-      <p className="muted offer-card__meta">
-        {meta ? <span>{meta}</span> : null}
-        {meta && offer.publishedAt ? <span aria-hidden="true"> · </span> : null}
-        {offer.publishedAt ? <span>published {formatDate(offer.publishedAt)}</span> : null}
-      </p>
+        <p className="muted offer-card__meta">
+          {meta ? <span>{meta}</span> : null}
+          {meta && offer.publishedAt ? <span aria-hidden="true"> · </span> : null}
+          {offer.publishedAt ? <span>published {formatDate(offer.publishedAt)}</span> : null}
+        </p>
+      </Link>
     </article>
   )
 }

@@ -55,6 +55,16 @@ function OfferDetails({ offer }: { offer: OfferResponseTO }) {
           <DetailRow label="Published" value={formatDate(offer.publishedAt)} />
           <DetailRow label="Created" value={formatDateTime(offer.createdAt)} />
           <DetailRow label="Updated" value={formatDateTime(offer.updatedAt)} />
+          {externalUrl ? (
+            <div>
+              <dt>Original link</dt>
+              <dd>
+                <a href={externalUrl} target="_blank" rel="noreferrer noopener">
+                  {offer.url}
+                </a>
+              </dd>
+            </div>
+          ) : null}
         </dl>
       </section>
 
@@ -69,16 +79,81 @@ function OfferDetails({ offer }: { offer: OfferResponseTO }) {
         </section>
       ) : null}
 
-      <section className="card">
-        <h2>Description</h2>
-        <p className="description">
-          {offer.description?.trim() || 'No description was provided by the source.'}
-        </p>
+      <section className="card description-card">
+        <div className="description-card__header">
+          <div>
+            <h2>Description</h2>
+            <p className="description-card__subtitle">
+              {[offer.companyName, offer.location, offer.source ? humanize(offer.source) : null]
+                .filter(Boolean)
+                .join(' · ') || 'Job details'}
+            </p>
+          </div>
+          {externalUrl ? (
+            <a
+              className="btn btn--ghost"
+              href={externalUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              View original posting
+            </a>
+          ) : null}
+        </div>
+
+        <div className="description-pill-grid">
+          {offer.experienceLevel ? (
+            <div className="description-pill">
+              <span className="description-pill__label">Experience</span>
+              <span className="description-pill__value">{humanize(offer.experienceLevel)}</span>
+            </div>
+          ) : null}
+          {offer.employmentType ? (
+            <div className="description-pill">
+              <span className="description-pill__label">Employment</span>
+              <span className="description-pill__value">{humanize(offer.employmentType)}</span>
+            </div>
+          ) : null}
+          {offer.workMode ? (
+            <div className="description-pill">
+              <span className="description-pill__label">Work mode</span>
+              <span className="description-pill__value">{humanize(offer.workMode)}</span>
+            </div>
+          ) : null}
+          {offer.language ? (
+            <div className="description-pill">
+              <span className="description-pill__label">Language</span>
+              <span className="description-pill__value">{humanize(offer.language)}</span>
+            </div>
+          ) : null}
+          {offer.salaryType ? (
+            <div className="description-pill">
+              <span className="description-pill__label">Salary type</span>
+              <span className="description-pill__value">{humanize(offer.salaryType)}</span>
+            </div>
+          ) : null}
+          {offer.externalId ? (
+            <div className="description-pill">
+              <span className="description-pill__label">Source ID</span>
+              <span className="description-pill__value">{offer.externalId}</span>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="description-body">
+          {offer.description?.trim() ? (
+            <p>{offer.description.trim()}</p>
+          ) : (
+            <p className="muted">No description was provided by the source.</p>
+          )}
+        </div>
       </section>
 
-      <p>
-        <Link className="back-link" to="/offers">← Back to offers</Link>
-      </p>
+      <div className="offer-details__footer">
+        <Link className="btn btn--ghost" to="/offers">
+          <span aria-hidden="true">←</span> Back to offers
+        </Link>
+      </div>
     </div>
   )
 }

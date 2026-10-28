@@ -157,7 +157,7 @@ export function OffersPage() {
               <input
                 name="titles"
                 type="search"
-                placeholder="e.g. Java"
+                placeholder="Java"
                 defaultValue={searchParams.get('titles') ?? ''}
               />
             </label>
@@ -167,7 +167,7 @@ export function OffersPage() {
               <input
                 name="technologies"
                 type="text"
-                placeholder="e.g. Java"
+                placeholder="Java"
                 defaultValue={searchParams.get('technologies') ?? ''}
               />
             </label>
@@ -177,7 +177,7 @@ export function OffersPage() {
               <input
                 name="experienceLevels"
                 type="text"
-                placeholder="e.g. SENIOR"
+                placeholder="SENIOR"
                 defaultValue={searchParams.get('experienceLevels') ?? ''}
               />
             </label>
@@ -187,7 +187,7 @@ export function OffersPage() {
               <input
                 name="sources"
                 type="text"
-                placeholder="e.g. JUST_JOIN_IT"
+                placeholder="justjoin.it"
                 defaultValue={searchParams.get('sources') ?? ''}
               />
             </label>
@@ -239,7 +239,7 @@ export function OffersPage() {
                 <input
                   name="companyNames"
                   type="search"
-                  placeholder="e.g. Acme"
+                  placeholder="Acme"
                   defaultValue={searchParams.get('companyNames') ?? ''}
                 />
               </label>
@@ -249,7 +249,7 @@ export function OffersPage() {
                 <input
                   name="employmentTypes"
                   type="text"
-                  placeholder="e.g. B2B"
+                  placeholder="B2B"
                   defaultValue={searchParams.get('employmentTypes') ?? ''}
                 />
               </label>
@@ -259,7 +259,7 @@ export function OffersPage() {
                 <input
                   name="workModes"
                   type="text"
-                  placeholder="e.g. REMOTE"
+                  placeholder="REMOTE"
                   defaultValue={searchParams.get('workModes') ?? ''}
                 />
               </label>
@@ -269,7 +269,7 @@ export function OffersPage() {
                 <input
                   name="currencies"
                   type="text"
-                  placeholder="e.g. PLN"
+                  placeholder="PLN"
                   defaultValue={searchParams.get('currencies') ?? ''}
                 />
               </label>

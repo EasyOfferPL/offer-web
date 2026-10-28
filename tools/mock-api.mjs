@@ -39,7 +39,7 @@ const offers = Array.from({ length: 57 }, (_, index) => {
   return {
     id,
     externalId: `ext-${1000 + id}`,
-    title: `${level === 'SENIOR' ? 'Senior ' : level === 'JUNIOR' ? 'Junior ' : ''}${category} Engineer ${id}`,
+    title: `${level === 'SENIOR' ? 'Senior ' : level === 'JUNIOR' ? 'Junior ' : ''}${category} Engineer`,
     companyName: companies[index % companies.length],
     location: index % 13 === 0 ? null : cities[index % cities.length],
     description: `Sample description for offer ${id}.\nSecond paragraph with details.`,
