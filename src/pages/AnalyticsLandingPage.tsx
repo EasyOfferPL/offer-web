@@ -85,24 +85,7 @@ export function AnalyticsLandingPage() {
         </div>
       </section>
 
-      <section className="card landing-notes" aria-labelledby="scope-rules-heading">
-        <h2 id="scope-rules-heading">How to read these numbers</h2>
-        <ul className="checklist">
-          <li>Calendar ranges are inclusive ISO dates (YYYY-MM-DD).</li>
-          <li>
-            Counts and shares are labelled separately; the denominator is always
-            visible.
-          </li>
-          <li>
-            Salary groups keep currency, unit, employment type and gross/net; small
-            samples are marked exploratory.
-          </li>
-          <li>
-            Technology trends preserve zero months and use the publication month
-            reported by the backend.
-          </li>
-        </ul>
-      </section>
+
     </div>
   )
 }
