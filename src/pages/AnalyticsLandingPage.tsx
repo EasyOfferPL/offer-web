@@ -69,17 +69,17 @@ export function AnalyticsLandingPage() {
         <div className="view-grid">
           {views.map((view) => (
             <article className="card card--link view-card" key={view.to}>
-              <span className="view-card__number">{view.number}</span>
-              <h2>
-                <Link to={view.to}>{view.title}</Link>
-              </h2>
-              <p className="muted">{view.description}</p>
-              <ul className="chips view-card__tags" aria-label="View properties">
-                {view.tags.map((tag) => (
-                  <li key={tag}>{tag}</li>
-                ))}
-              </ul>
-              <span className="view-card__cta">Open view →</span>
+              <Link className="view-card__link" to={view.to} aria-label={`Open ${view.title}`}>
+                <span className="view-card__number">{view.number}</span>
+                <h2 className="view-card__title">{view.title}</h2>
+                <p className="muted">{view.description}</p>
+                <ul className="chips view-card__tags" aria-label="View properties">
+                  {view.tags.map((tag) => (
+                    <li key={tag}>{tag}</li>
+                  ))}
+                </ul>
+                <span className="view-card__cta">Open view →</span>
+              </Link>
             </article>
           ))}
         </div>
