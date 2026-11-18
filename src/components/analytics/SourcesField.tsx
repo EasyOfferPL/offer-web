@@ -17,12 +17,9 @@ export function SourcesField({
       <input
         type="text"
         name="sources"
-        placeholder="e.g. JUST_JOIN_IT, THE_PROTOCOL_IT"
+        placeholder="justjoin.it"
         defaultValue={defaultValue.join(', ')}
       />
-      <span className="field__hint field__hint--muted">
-        Optional. Comma-separated, sent as repeated parameters.
-      </span>
     </label>
   )
 }
