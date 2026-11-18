@@ -307,53 +307,25 @@ function DistributionResults({
     return null
   }
 
-  return (
-    <DistributionContent
-      data={salaries.data}
-      categoryName={categoryName}
-      experienceLevel={experienceLevel}
-    />
-  )
+  return <DistributionContent data={salaries.data} />
 }
 
 interface DistributionContentProps {
   data: SalaryAnalyticsTO
-  categoryName: string
-  experienceLevel: string
 }
 
-function DistributionContent({
-  data,
-  categoryName,
-  experienceLevel,
-}: DistributionContentProps) {
+function DistributionContent({ data }: DistributionContentProps) {
   const hasGroups =
     data.byCategory.length > 0 || data.byExperienceLevel.length > 0
 
   return (
     <>
-      <div className="analytics-meta" aria-label="Distribution scope">
-        <span className="tag">Category: {categoryName || 'all'}</span>
-        <span className="tag">
-          Experience level: {experienceLevel || 'all'}
-        </span>
-        <span className="tag">
-          Recommended sample: {data.recommendedMinimumSampleSize}
-        </span>
-        {data.quantileMethod ? (
-          <span className="tag">Quantiles: {data.quantileMethod}</span>
-        ) : null}
-        {data.salaryNormalizationVersion ? (
-          <span className="tag">
-            Salary normalisation: {data.salaryNormalizationVersion}
-          </span>
-        ) : null}
-      </div>
+
 
       {!hasGroups ? (
         <EmptyState
-          title="No comparable salary groups"
-          description="No offers with usable salary data match this scope. Remove the filters or widen the dataset."
+          title="No salary data"
+          description="No salary data matches this scope. Try different filters."
         />
       ) : (
         <>
@@ -362,14 +334,7 @@ function DistributionContent({
               <div className="section-head section-head--compact">
                 <div>
                   <h3 id="by-category-heading">By category</h3>
-                  <p className="muted">
-                    One card per category and salary context. Values are never
-                    combined across currencies or salary types.
-                  </p>
                 </div>
-                <span className="badge badge--muted">
-                  {data.byCategory.length} group(s)
-                </span>
               </div>
               <div className="salary-grid">
                 {data.byCategory.map((statistic) => (
@@ -391,14 +356,7 @@ function DistributionContent({
               <div className="section-head section-head--compact">
                 <div>
                   <h3 id="by-experience-heading">By experience level</h3>
-                  <p className="muted">
-                    Experience groups use the same per-card context and sample
-                    rules.
-                  </p>
                 </div>
-                <span className="badge badge--muted">
-                  {data.byExperienceLevel.length} group(s)
-                </span>
               </div>
               <div className="salary-grid">
                 {data.byExperienceLevel.map((statistic) => (
@@ -411,12 +369,6 @@ function DistributionContent({
               </div>
             </section>
           ) : null}
-
-          <p className="analytics-note">
-            Share and count are not used here: salary statistics describe only
-            offers with usable salary data. Groups below the recommended sample
-            size are marked exploratory.
-          </p>
         </>
       )}
     </>
@@ -485,23 +437,10 @@ function SalaryTrendContent({ data }: { data: SalaryTrendTO }) {
 
   return (
     <>
-      <div className="analytics-meta" aria-label="Trend scope">
-        <span className="tag tag--accent">{humanize(data.categoryName)}</span>
-        <span className="tag">
-          {data.currency} / {data.salaryUnit.toLowerCase()} ·{' '}
-          {humanize(data.salaryType)}
-        </span>
-        <span className="tag">Employment: {data.employmentType}</span>
-        <span className="tag">
-          Experience: {data.experienceLevel || 'all'}
-        </span>
-        <span className="tag">{data.points.length} month(s)</span>
-      </div>
-
       {data.points.length === 0 ? (
         <EmptyState
           title="No trend points"
-          description="The backend returned no months for this scope."
+          description="No data for this period."
         />
       ) : (
         <>

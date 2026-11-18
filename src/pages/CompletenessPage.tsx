@@ -46,9 +46,8 @@ export function CompletenessPage() {
   return (
     <div className="page">
       <PageHeader
-        title="Source data completeness"
-        description="How much of the selected source data can be used for each field. Percentages use eligible offers as the denominator."
-        badge="Analytics"
+        title="Data completeness"
+        description="How complete the data is for key fields."
       />
       <AnalyticsTabs />
 
@@ -117,50 +116,18 @@ function CompletenessResults({
 }
 
 function CompletenessContent({ data }: { data: DataCompletenessTO }) {
-  const fieldCount = data.bySource[0]?.fields.length ?? 0
-
   return (
     <>
-      <section className="stat-rail" aria-label="Scope summary">
+      <section className="stat-rail" aria-label="Summary">
         <div className="stat">
-          <span className="stat__label">Eligible offers</span>
+          <span className="stat__label">Vacancies</span>
           <span className="stat__value stat__value--accent">
             {data.eligibleOfferCount}
           </span>
         </div>
-        <div className="stat">
-          <span className="stat__label">Sources</span>
-          <span className="stat__value">{data.bySource.length}</span>
-        </div>
-        <div className="stat">
-          <span className="stat__label">Fields tracked</span>
-          <span className="stat__value">{fieldCount}</span>
-        </div>
-        <div className="stat">
-          <span className="stat__label">Period field</span>
-          <span className="stat__value stat__value--text">
-            {data.periodField ?? 'publishedAt'}
-          </span>
-        </div>
       </section>
 
-      <div className="analytics-meta" aria-label="Completeness scope">
-        <span className="tag">{data.dateFrom ?? '—'} → {data.dateTo ?? '—'}</span>
-        <span className="tag">
-          Sources: {data.sources && data.sources.length > 0 ? data.sources.join(', ') : 'all'}
-        </span>
-        {data.unitOfAnalysis ? (
-          <span className="tag">Unit: {data.unitOfAnalysis}</span>
-        ) : null}
-        {data.completenessVersion ? (
-          <span className="tag">Version: {data.completenessVersion}</span>
-        ) : null}
-        {data.salaryNormalizationVersion ? (
-          <span className="tag">
-            Salary normalisation: {data.salaryNormalizationVersion}
-          </span>
-        ) : null}
-      </div>
+
 
       {data.bySource.length === 0 ? (
         <EmptyState
