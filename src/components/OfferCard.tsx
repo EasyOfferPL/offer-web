@@ -26,7 +26,7 @@ export function OfferCard({ offer }: OfferCardProps) {
               <p className="offer-card__place">{place || 'Company and location not specified'}</p>
             </div>
           </div>
-          {offer.source ? <span className="badge badge--muted">{offer.source}</span> : null}
+          {offer.source ? <span className="badge badge--muted">{humanize(offer.source)}</span> : null}
         </div>
 
         <div className="offer-card__salary-row">
