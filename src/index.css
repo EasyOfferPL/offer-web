@@ -833,10 +833,29 @@ select:focus-visible,
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.offer-card::after {
+  content: '';
+  position: absolute;
+  right: -60px;
+  bottom: -90px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 181, 68, 0.16), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
 .offer-card:hover {
   border-color: rgba(245, 181, 68, 0.28);
-  box-shadow: var(--shadow), 0 0 30px rgba(245, 181, 68, 0.08);
+  box-shadow: var(--shadow), 0 12px 40px -18px rgba(245, 181, 68, 0.28);
   transform: translateY(-2px);
+}
+
+.offer-card:hover::after,
+.offer-card:focus-within::after {
+  opacity: 1;
 }
 
 .offer-card:focus-within {
@@ -845,12 +864,14 @@ select:focus-visible,
 }
 
 .offer-card__link {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 14px;
   width: 100%;
   height: 100%;
-  padding: 18px 20px;
+  padding: 18px 20px 16px;
   color: inherit;
   text-decoration: none;
 }
@@ -859,11 +880,45 @@ select:focus-visible,
   outline: none;
 }
 
+.offer-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.offer-card__identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.offer-card__avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--accent-border);
+  border-radius: 11px;
+  background: linear-gradient(145deg, rgba(245, 181, 68, 0.2), rgba(245, 181, 68, 0.06));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: var(--accent-strong);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.offer-card__heading {
+  min-width: 0;
+}
+
 .offer-card__title {
   margin: 0;
-  font-size: 19px;
-  letter-spacing: -0.02em;
   color: var(--text);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
 }
 
 .offer-card:hover .offer-card__title,
@@ -871,25 +926,102 @@ select:focus-visible,
   color: var(--accent-strong);
 }
 
-.offer-card__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
 .offer-card p {
   margin: 0;
 }
 
+.offer-card__place {
+  margin-top: 3px !important;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.offer-card__salary-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(245, 181, 68, 0.14);
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, rgba(245, 181, 68, 0.09), rgba(245, 181, 68, 0.02));
+}
+
+.offer-card__salary-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 .offer-card__salary {
   color: var(--accent-strong);
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.offer-card__chips {
+  margin-top: 2px;
+}
+
+.offer-card__chips li {
+  border-color: rgba(245, 181, 68, 0.12);
+  background: rgba(245, 181, 68, 0.05);
+}
+
+.offer-card__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 
 .offer-card__meta {
-  font-size: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.offer-card__meta-pill {
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+.offer-card__arrow {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 14px;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.offer-card:hover .offer-card__arrow,
+.offer-card:focus-within .offer-card__arrow {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  transform: translateX(2px);
 }
 
 .chips {
