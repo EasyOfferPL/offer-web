@@ -1,5 +1,4 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { API_BASE_URL } from '../api/config'
 
 const navItems = [
   { to: '/offers', label: 'Offers' },
@@ -49,10 +48,7 @@ export function AppLayout() {
 
       <footer className="site-footer">
         <div className="container site-footer__inner">
-          <span>EasyOffer frontend · M3 analytics</span>
-          <span className="muted">
-            API base: <code>{API_BASE_URL}</code>
-          </span>
+          <span>EasyOffer · Job market analytics</span>
         </div>
       </footer>
     </div>

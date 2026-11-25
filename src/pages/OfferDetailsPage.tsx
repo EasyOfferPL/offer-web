@@ -3,32 +3,57 @@ import { offersApi } from '../api/endpoints'
 import { ApiError } from '../api/errors'
 import type { OfferResponseTO } from '../api/types'
 import { ErrorState, LoadingState } from '../components/AsyncStates'
-import { PageHeader } from '../components/PageHeader'
 import { useApiQuery } from '../hooks/useApiQuery'
-import { formatDate, formatDateTime, formatSalary, humanize } from '../lib/format'
+import { formatDate, formatSalary, humanize } from '../lib/format'
 
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt>{label}</dt>
-      <dd>{value || '—'}</dd>
-    </div>
-  )
+interface MetaItem {
+  label: string
+  value: string
 }
 
 function OfferDetails({ offer }: { offer: OfferResponseTO }) {
   const place = [offer.companyName, offer.location].filter(Boolean).join(' · ')
   const externalUrl =
     offer.url && /^https?:\/\//i.test(offer.url) ? offer.url : undefined
+  const companyInitial = (offer.companyName ?? '?').trim().charAt(0).toUpperCase() || '?'
+
+  const meta: MetaItem[] = [
+    { label: 'Experience', value: humanize(offer.experienceLevel) },
+    { label: 'Employment', value: humanize(offer.employmentType) },
+    { label: 'Work mode', value: humanize(offer.workMode) },
+    { label: 'Language', value: humanize(offer.language) },
+    { label: 'Salary type', value: humanize(offer.salaryType) },
+  ].filter((item) => item.value !== '—')
 
   return (
     <div className="page">
-      <PageHeader
-        title={offer.title}
-        description={place || 'Company and location not specified'}
-        badge={offer.source ?? undefined}
-        actions={
-          externalUrl ? (
+      <section className="card offer-hero">
+        <div className="offer-hero__main">
+          <span className="offer-hero__avatar" aria-hidden="true">
+            {companyInitial}
+          </span>
+          <div className="offer-hero__text">
+            <div className="offer-hero__badges">
+              {offer.source ? <span className="badge">{humanize(offer.source)}</span> : null}
+              {offer.publishedAt ? (
+                <span className="badge badge--muted">
+                  Published {formatDate(offer.publishedAt)}
+                </span>
+              ) : null}
+            </div>
+            <h1 className="offer-hero__title">{offer.title}</h1>
+            <p className="offer-hero__place">
+              {place || 'Company and location not specified'}
+            </p>
+          </div>
+        </div>
+
+        <div className="offer-hero__aside">
+          <div className="offer-hero__salary">
+            <span className="offer-hero__salary-label">Salary</span>
+            <span className="offer-hero__salary-value">{formatSalary(offer)}</span>
+          </div>
+          {externalUrl ? (
             <a
               className="btn"
               href={externalUrl}
@@ -37,36 +62,20 @@ function OfferDetails({ offer }: { offer: OfferResponseTO }) {
             >
               Open original posting
             </a>
-          ) : undefined
-        }
-      />
-
-      <section className="card">
-        <h2>Overview</h2>
-        <dl className="detail-grid">
-          <DetailRow label="Salary" value={formatSalary(offer)} />
-          <DetailRow label="Salary type" value={humanize(offer.salaryType)} />
-          <DetailRow label="Experience" value={humanize(offer.experienceLevel)} />
-          <DetailRow label="Employment" value={humanize(offer.employmentType)} />
-          <DetailRow label="Work mode" value={humanize(offer.workMode)} />
-          <DetailRow label="Language" value={humanize(offer.language)} />
-          <DetailRow label="Source" value={humanize(offer.source)} />
-          <DetailRow label="Source ID" value={offer.externalId ?? '—'} />
-          <DetailRow label="Published" value={formatDate(offer.publishedAt)} />
-          <DetailRow label="Created" value={formatDateTime(offer.createdAt)} />
-          <DetailRow label="Updated" value={formatDateTime(offer.updatedAt)} />
-          {externalUrl ? (
-            <div>
-              <dt>Original link</dt>
-              <dd>
-                <a href={externalUrl} target="_blank" rel="noreferrer noopener">
-                  {offer.url}
-                </a>
-              </dd>
-            </div>
           ) : null}
-        </dl>
+        </div>
       </section>
+
+      {meta.length > 0 ? (
+        <section className="offer-meta" aria-label="Job details">
+          {meta.map((item) => (
+            <div className="offer-meta__item" key={item.label}>
+              <span className="offer-meta__label">{item.label}</span>
+              <span className="offer-meta__value">{item.value}</span>
+            </div>
+          ))}
+        </section>
+      ) : null}
 
       {offer.technologies && offer.technologies.length > 0 ? (
         <section className="card">
@@ -83,68 +92,28 @@ function OfferDetails({ offer }: { offer: OfferResponseTO }) {
         <div className="description-card__header">
           <div>
             <h2>Description</h2>
-            <p className="description-card__subtitle">
-              {[offer.companyName, offer.location, offer.source ? humanize(offer.source) : null]
-                .filter(Boolean)
-                .join(' · ') || 'Job details'}
-            </p>
+            {place ? (
+              <p className="description-card__subtitle">{place}</p>
+            ) : null}
           </div>
-          {externalUrl ? (
-            <a
-              className="btn btn--ghost"
-              href={externalUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              View original posting
-            </a>
-          ) : null}
-        </div>
-
-        <div className="description-pill-grid">
-          {offer.experienceLevel ? (
-            <div className="description-pill">
-              <span className="description-pill__label">Experience</span>
-              <span className="description-pill__value">{humanize(offer.experienceLevel)}</span>
-            </div>
-          ) : null}
-          {offer.employmentType ? (
-            <div className="description-pill">
-              <span className="description-pill__label">Employment</span>
-              <span className="description-pill__value">{humanize(offer.employmentType)}</span>
-            </div>
-          ) : null}
-          {offer.workMode ? (
-            <div className="description-pill">
-              <span className="description-pill__label">Work mode</span>
-              <span className="description-pill__value">{humanize(offer.workMode)}</span>
-            </div>
-          ) : null}
-          {offer.language ? (
-            <div className="description-pill">
-              <span className="description-pill__label">Language</span>
-              <span className="description-pill__value">{humanize(offer.language)}</span>
-            </div>
-          ) : null}
-          {offer.salaryType ? (
-            <div className="description-pill">
-              <span className="description-pill__label">Salary type</span>
-              <span className="description-pill__value">{humanize(offer.salaryType)}</span>
-            </div>
-          ) : null}
-          {offer.externalId ? (
-            <div className="description-pill">
-              <span className="description-pill__label">Source ID</span>
-              <span className="description-pill__value">{offer.externalId}</span>
-            </div>
-          ) : null}
         </div>
 
         <div className="description-body">
           {offer.description?.trim() ? (
             <p>{offer.description.trim()}</p>
           ) : (
-            <p className="muted">No description was provided by the source.</p>
+            <div className="description-empty">
+              <span className="description-empty__icon" aria-hidden="true">≡</span>
+              <div>
+                <p className="description-empty__title">
+                  No description provided
+                </p>
+                <p className="muted description-empty__text">
+                  The source did not publish a description for this offer. Open the
+                  original posting for the full details.
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </section>
