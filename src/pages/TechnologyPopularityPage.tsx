@@ -199,22 +199,7 @@ function PopularityContent({
         </div>
       </section>
 
-      <div className="analytics-meta" aria-label="Query scope">
-        <span className="tag">{data.dateFrom ?? '—'} → {data.dateTo ?? '—'}</span>
-        <span className="tag">Period field: {data.periodField ?? 'publishedAt'}</span>
-        <span className="tag">Category: {data.categoryName || 'all'}</span>
-        <span className="tag">
-          Sources: {data.sources && data.sources.length > 0 ? data.sources.join(', ') : 'all'}
-        </span>
-        {data.technologyNormalizationVersion ? (
-          <span className="tag">
-            Normalisation: {data.technologyNormalizationVersion}
-          </span>
-        ) : null}
-        {data.deduplicationVersion ? (
-          <span className="tag">Deduplication: {data.deduplicationVersion}</span>
-        ) : null}
-      </div>
+
 
       {data.technologies.length === 0 ? (
         <EmptyState
