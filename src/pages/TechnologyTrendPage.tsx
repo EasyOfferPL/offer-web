@@ -177,19 +177,6 @@ function TrendContent({ data }: { data: TechnologyTrendTO }) {
         </div>
       </section>
 
-      <div className="analytics-meta" aria-label="Query scope">
-        <span className="tag tag--accent">{data.technologyName}</span>
-        <span className="tag">{data.dateFrom ?? '—'} → {data.dateTo ?? '—'}</span>
-        <span className="tag">Period field: {data.periodField ?? 'publishedAt'}</span>
-        <span className="tag">
-          Month assignment: {data.monthAssignment ?? 'publishedAt'}
-        </span>
-        <span className="tag">Category: {data.categoryName || 'all'}</span>
-        <span className="tag">
-          Sources: {data.sources && data.sources.length > 0 ? data.sources.join(', ') : 'all'}
-        </span>
-      </div>
-
       {data.points.length === 0 ? (
         <EmptyState
           title="No monthly points"
